@@ -5,10 +5,10 @@ public class Computer {
     private String ram;
     private String storage;
 
-    public Computer(String cpu, String ram, String storage) {
-        this.cpu = cpu;
-        this.ram = ram;
-        this.storage = storage;
+    private Computer(Builder builder) {
+        this.cpu = builder.cpu;
+        this.ram = builder.ram;
+        this.storage = builder.storage;
     }
 
     public void display() {
@@ -36,7 +36,7 @@ public class Computer {
         }
 
         public Computer build() {
-            return new Computer(cpu, ram, storage);
+            return new Computer(this);
         }
     }
 }
