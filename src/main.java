@@ -1,3 +1,7 @@
+import BehavioralPatterns.Strategy.CashPayment;
+import BehavioralPatterns.Strategy.CreditCardPayment;
+import BehavioralPatterns.Strategy.PaymentProccesor;
+import BehavioralPatterns.Strategy.PaymentStrategy;
 import CreationalPatterns.Abstract_factory.*;
 import CreationalPatterns.Builder.Computer;
 import CreationalPatterns.Factory_method.ConcreteCreatorA;
@@ -115,5 +119,16 @@ public class main {
 
         Subject subjectB = new Proxy("B");
         subjectB.request();
+
+        //Behavioral
+        //Strategy
+        CashPayment ManyCashPayment = new CashPayment();
+        PaymentProccesor Vasya = new PaymentProccesor(ManyCashPayment);
+        Vasya.Pay(50);
+
+        CreditCardPayment Vasyas_Card = new CreditCardPayment("5122-5345-4567-1245", 785);
+        Vasya.SetPaymentStrategy(Vasyas_Card);
+        Vasya.Pay(100);
+        //
     }
 }
