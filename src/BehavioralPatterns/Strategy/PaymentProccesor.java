@@ -1,6 +1,5 @@
 package BehavioralPatterns.Strategy;
 
-
 public class PaymentProccesor {
     private PaymentStrategy paymentStrategy;
     public PaymentProccesor(PaymentStrategy paymentStrategy) {

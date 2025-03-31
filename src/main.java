@@ -1,7 +1,6 @@
 import BehavioralPatterns.Strategy.CashPayment;
 import BehavioralPatterns.Strategy.CreditCardPayment;
 import BehavioralPatterns.Strategy.PaymentProccesor;
-import BehavioralPatterns.Strategy.PaymentStrategy;
 import CreationalPatterns.Abstract_factory.*;
 import CreationalPatterns.Builder.Computer;
 import CreationalPatterns.Factory_method.ConcreteCreatorA;
@@ -17,6 +16,15 @@ import StructuralPatterns.Decorator.Component;
 import StructuralPatterns.Facade.*;
 import StructuralPatterns.Flyweight.*;
 import StructuralPatterns.Proxy.*;
+import BehavioralPatterns.ChainsOfResponsibility.*;
+import BehavioralPatterns.Mediator.*;
+import BehavioralPatterns.Strategy.*;
+import BehavioralPatterns.Command.*;
+import BehavioralPatterns.Iterator.*;
+import BehavioralPatterns.Interpreter.*;
+import BehavioralPatterns.Memento.*;
+import BehavioralPatterns.Observer.*;
+import BehavioralPatterns.State.*;
 
 public class main {
     public static void main(String[] args) {
@@ -129,6 +137,68 @@ public class main {
         CreditCardPayment Vasyas_Card = new CreditCardPayment("5122-5345-4567-1245", 785);
         Vasya.SetPaymentStrategy(Vasyas_Card);
         Vasya.Pay(100);
-        //
+        // Chain of Responsibility
+        Handler handler1 = new ConcreteHandler1();
+        Handler handler2 = new ConcreteHandler2();
+        handler1.setNext(handler2);
+        handler1.handleRequest("Process this");
+
+        // Command
+        Receiver receiver = new Receiver();
+        Command command = new ConcreteCommand(receiver);
+        Invoker invoker = new Invoker();
+        invoker.setCommand(command);
+        invoker.executeCommand();
+
+        // Iterator
+        Collection collection = new ConcreteCollection();
+        Iterator iterator = collection.createIterator();
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+
+        // Mediator
+        ConcreteMediator mediator = new ConcreteMediator();
+        Colleague colleague1 = new ConcreteColleague1(mediator);
+        Colleague colleague2 = new ConcreteColleague2(mediator);
+        mediator.setColleagues(colleague1, colleague2);
+        colleague1.send("Hello from Colleague1");
+        colleague2.send("Hello from Colleague2");
+
+        // Memento
+        Originator originator = new Originator();
+        Caretaker caretaker = new Caretaker();
+        originator.setState("State1");
+        caretaker.addMemento(originator.saveState());
+        originator.setState("State2");
+        originator.restoreState(caretaker.getMemento(0));
+
+        // Observer
+        Subject subject = new ConcreteSubject();
+        Observer observer1 = new ConcreteObserver();
+        Observer observer2 = new ConcreteObserver();
+        subject.attach(observer1);
+        subject.attach(observer2);
+        subject.setState("New State");
+
+        // State
+        Context context = new Context();
+        context.setState(new ConcreteStateA());
+        context.request();
+        context.setState(new ConcreteStateB());
+        context.request();
+
+        // Template Method
+        AbstractClass template1 = new ConcreteClass1();
+        AbstractClass template2 = new ConcreteClass2();
+        template1.templateMethod();
+        template2.templateMethod();
+
+        // Visitor
+        Element elementA = new ConcreteElementA();
+        Element elementB = new ConcreteElementB();
+        Visitor visitor = new ConcreteVisitor();
+        elementA.accept(visitor);
+        elementB.accept(visitor);
     }
 }
