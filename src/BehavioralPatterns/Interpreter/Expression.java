@@ -1,5 +1,6 @@
 package BehavioralPatterns.Interpreter;
 
-interface Expression {
+public interface Expression {
     boolean interpret(String context);
 }
+

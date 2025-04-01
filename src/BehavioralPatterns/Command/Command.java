@@ -1,5 +1,5 @@
 package BehavioralPatterns.Command;
 
-interface Command {
+public interface Command {
     void execute();
 }

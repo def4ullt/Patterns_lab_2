@@ -1,5 +1,6 @@
 package BehavioralPatterns.State;
 
-interface State {
-    void handle();
+public interface State {
+    void doAction(Context context);
 }
+

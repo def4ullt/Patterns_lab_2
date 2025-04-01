@@ -1,6 +1,14 @@
-import BehavioralPatterns.Strategy.CashPayment;
-import BehavioralPatterns.Strategy.CreditCardPayment;
-import BehavioralPatterns.Strategy.PaymentProccesor;
+import BehavioralPatterns.Command.*;
+import BehavioralPatterns.Strategy.*;
+import BehavioralPatterns.TemplateMethod.*;
+import BehavioralPatterns.Observer.*;
+import BehavioralPatterns.Iterator.*;
+import BehavioralPatterns.Visitor.*;
+import BehavioralPatterns.Mediator.*;
+import BehavioralPatterns.ChainsOfResponsibility.*;
+import BehavioralPatterns.Memento.*;
+import BehavioralPatterns.State.*;
+import BehavioralPatterns.Interpreter.*;
 import CreationalPatterns.Abstract_factory.*;
 import CreationalPatterns.Builder.Computer;
 import CreationalPatterns.Factory_method.ConcreteCreatorA;
@@ -16,17 +24,16 @@ import StructuralPatterns.Decorator.Component;
 import StructuralPatterns.Facade.*;
 import StructuralPatterns.Flyweight.*;
 import StructuralPatterns.Proxy.*;
-import BehavioralPatterns.ChainsOfResponsibility.*;
-import BehavioralPatterns.Mediator.*;
-import BehavioralPatterns.Strategy.*;
-import BehavioralPatterns.Command.*;
-import BehavioralPatterns.Iterator.*;
-import BehavioralPatterns.Interpreter.*;
-import BehavioralPatterns.Memento.*;
-import BehavioralPatterns.Observer.*;
-import BehavioralPatterns.State.*;
 
 public class main {
+    private static AbstractLogger getChainOfLoggers() {
+        AbstractLogger errorLogger = new ErrorLogger(AbstractLogger.ERROR);
+        AbstractLogger fileLogger = new ConsoleLogger(AbstractLogger.DEBUG);
+        AbstractLogger consoleLogger = new ConsoleLogger(AbstractLogger.INFO);
+        errorLogger.setNextLogger(fileLogger);
+        fileLogger.setNextLogger(consoleLogger);
+        return errorLogger;
+    }
     public static void main(String[] args) {
         //Creational patterns
         //singleton
@@ -137,68 +144,86 @@ public class main {
         CreditCardPayment Vasyas_Card = new CreditCardPayment("5122-5345-4567-1245", 785);
         Vasya.SetPaymentStrategy(Vasyas_Card);
         Vasya.Pay(100);
-        // Chain of Responsibility
-        Handler handler1 = new ConcreteHandler1();
-        Handler handler2 = new ConcreteHandler2();
-        handler1.setNext(handler2);
-        handler1.handleRequest("Process this");
+        //Template method
+        Game newGame = new csgo();
+        Game afterLesson = new Pool();
 
-        // Command
-        Receiver receiver = new Receiver();
-        Command command = new ConcreteCommand(receiver);
-        Invoker invoker = new Invoker();
-        invoker.setCommand(command);
-        invoker.executeCommand();
+        newGame.play();
+        afterLesson.play();
+        //Observer
+        Observer ukrnet = new MessageSubscriber("ukrnet");
+        Observer viber = new MessageSubscriber("viber");
 
-        // Iterator
-        Collection collection = new ConcreteCollection();
-        Iterator iterator = collection.createIterator();
-        while (iterator.hasNext()) {
-            System.out.println(iterator.next());
+        MessagePublisher phone = new MessagePublisher();
+
+        phone.add(ukrnet);
+        phone.add(viber);
+
+        phone.setMessage("S VELIKODNEM!!!");
+
+        //Iterator
+        NameRepository namesRepository = new NameRepository();
+        for (Iterator iter = namesRepository.getIterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            System.out.println("Name : " + name);
         }
 
-        // Mediator
-        ConcreteMediator mediator = new ConcreteMediator();
-        Colleague colleague1 = new ConcreteColleague1(mediator);
-        Colleague colleague2 = new ConcreteColleague2(mediator);
-        mediator.setColleagues(colleague1, colleague2);
-        colleague1.send("Hello from Colleague1");
-        colleague2.send("Hello from Colleague2");
+        //Command
+        Stock abcStock = new Stock();
+        BuyStock buyStockOrder = new BuyStock(abcStock);
+        SellStock sellStockOrder = new SellStock(abcStock);
+        Broker broker = new Broker();
+        broker.takeOrder(buyStockOrder);
+        broker.takeOrder(sellStockOrder);
+        broker.placeOrders();
 
-        // Memento
+        //Visitor
+        ComputerPart keyboard = new Keyboard();
+        ComputerPart monitor = new Monitor();
+        keyboard.accept(new ComputerPartDisplayVisitor());
+        monitor.accept(new ComputerPartDisplayVisitor());
+
+        //Mediator
+        ChatRoom mediator = new ChatRoomImpl();
+        User Stas = new User("Stas", mediator);
+        User Dima = new User("Dima", mediator);
+        Stas.send("Привіт, Діма!");
+        Dima.send("Привіт, Стас!");
+
+        //Chain of Responsibility
+        AbstractLogger loggerChain = getChainOfLoggers();
+        loggerChain.logMessage(AbstractLogger.INFO, "Це інформаційне повідомлення.");
+        loggerChain.logMessage(AbstractLogger.DEBUG, "Це повідомлення для налагодження.");
+        loggerChain.logMessage(AbstractLogger.ERROR, "Це повідомлення про помилку.");
+
+        //Memento
         Originator originator = new Originator();
-        Caretaker caretaker = new Caretaker();
-        originator.setState("State1");
-        caretaker.addMemento(originator.saveState());
-        originator.setState("State2");
-        originator.restoreState(caretaker.getMemento(0));
+        CareTaker careTaker = new CareTaker();
+        originator.setState("Стан #1");
+        careTaker.add(originator.saveStateToMemento());
+        originator.setState("Стан #2");
+        careTaker.add(originator.saveStateToMemento());
+        originator.setState("Стан #3");
+        System.out.println("Поточний стан: " + originator.getState());
+        originator.getStateFromMemento(careTaker.get(1));
+        System.out.println("Другий збережений стан: " + originator.getState());
 
-        // Observer
-        Subject subject = new ConcreteSubject();
-        Observer observer1 = new ConcreteObserver();
-        Observer observer2 = new ConcreteObserver();
-        subject.attach(observer1);
-        subject.attach(observer2);
-        subject.setState("New State");
-
-        // State
+        //State
         Context context = new Context();
-        context.setState(new ConcreteStateA());
-        context.request();
-        context.setState(new ConcreteStateB());
-        context.request();
+        StartState startState = new StartState();
+        startState.doAction(context);
+        System.out.println(context.getState().toString());
+        StopState stopState = new StopState();
+        stopState.doAction(context);
+        System.out.println(context.getState().toString());
 
-        // Template Method
-        AbstractClass template1 = new ConcreteClass1();
-        AbstractClass template2 = new ConcreteClass2();
-        template1.templateMethod();
-        template2.templateMethod();
+        //Interpreter
+        Expression robert1 = new TerminalExpression("Robert");
+        Expression john1 = new TerminalExpression("John");
+        OrExpression orExpression = new OrExpression(robert1, john1);
+        AndExpression andExpression = new AndExpression(robert1, john1);
+        System.out.println("Роберт АБО Джон: " + orExpression.interpret("Robert"));
+        System.out.println("Роберт І Джон: " + andExpression.interpret("Robert John"));
 
-        // Visitor
-        Element elementA = new ConcreteElementA();
-        Element elementB = new ConcreteElementB();
-        Visitor visitor = new ConcreteVisitor();
-        elementA.accept(visitor);
-        elementB.accept(visitor);
     }
 }

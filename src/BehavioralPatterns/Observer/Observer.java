@@ -1,5 +1,5 @@
 package BehavioralPatterns.Observer;
 
-interface Observer {
+public interface Observer {
     void update(String message);
 }
