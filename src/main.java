@@ -8,7 +8,6 @@ import BehavioralPatterns.Mediator.*;
 import BehavioralPatterns.ChainsOfResponsibility.*;
 import BehavioralPatterns.Memento.*;
 import BehavioralPatterns.State.*;
-import BehavioralPatterns.Interpreter.*;
 import CreationalPatterns.Abstract_factory.*;
 import CreationalPatterns.Builder.Computer;
 import CreationalPatterns.Factory_method.ConcreteCreatorA;
@@ -216,14 +215,6 @@ public class main {
         StopState stopState = new StopState();
         stopState.doAction(context);
         System.out.println(context.getState().toString());
-
-        //Interpreter
-        Expression robert1 = new TerminalExpression("Robert");
-        Expression john1 = new TerminalExpression("John");
-        OrExpression orExpression = new OrExpression(robert1, john1);
-        AndExpression andExpression = new AndExpression(robert1, john1);
-        System.out.println("Роберт АБО Джон: " + orExpression.interpret("Robert"));
-        System.out.println("Роберт І Джон: " + andExpression.interpret("Robert John"));
 
     }
 }
